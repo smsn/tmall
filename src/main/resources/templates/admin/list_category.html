@@ -50,6 +50,21 @@
               vue.file = null;
             });
           },
+          deleteBean: function (id) {
+            if (!checkDeleteLink()) { //是否确认删除
+              return;
+            }
+            var url = this.uri + "/" + id;
+            axios.delete(url).then(function (response) {
+              //判断是否为空字符串
+              if (0 !== response.data.length) {
+                alert(response.data);
+              } else {
+                //当是空字符的时候，调用vue.list(0)查询第一页
+                vue.list(0);
+              }
+            });
+          },
           jump: function (page) {
             jump(page, vue); //定义在adminHeader.html 中
           },
