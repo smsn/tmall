@@ -21,7 +21,7 @@ import com.example.tmall.util.Page4Navigator;
 public class CategoryService {
     @Autowired CategoryDAO categoryDAO;
 
-    // 分页
+    // 分页查询
     public Page4Navigator<Category> list(int start, int size, int navigatePages) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = new PageRequest(start, size, sort);
@@ -34,4 +34,8 @@ public class CategoryService {
         return categoryDAO.findAll(sort);
     }
 
+    // 添加分类
+    public void add(Category category) {
+        categoryDAO.save(category);
+    }
 }

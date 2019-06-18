@@ -10,7 +10,9 @@
       var data4Vue = {
         uri: 'categories',
         pagination: {},
-        beans: []
+        beans: [],
+        bean: { id: 0, name: '' }, //存放分类信息
+        file: null //上传的文件
       };
       //ViewModel
       var vue = new Vue({
@@ -27,11 +29,36 @@
               vue.beans = response.data.content;
             });
           },
+          add: function () {
+            //判断分类名称和图片是否为空
+            if (!checkEmpty(this.bean.name, "分类名称")) {
+              return;
+            }
+            if (!checkEmpty(this.file, "分类图片")) {
+              return;
+            }
+            var url = this.uri;
+            //axios.js 上传文件要用 formData 这种方式
+            var formData = new FormData();
+            formData.append("image", this.file);
+            formData.append("name", this.bean.name);
+            axios.post(url, formData).then(function (response) {
+              vue.list(0); //查询第一页的数据
+              //还原数据
+              vue.bean = { id: 0, name: '', hp: '0' };
+              $("#categoryPic").val('');
+              vue.file = null;
+            });
+          },
           jump: function (page) {
             jump(page, vue); //定义在adminHeader.html 中
           },
           jumpByNumber: function (start) {
             jumpByNumber(start, vue);
+          },
+          getFile: function (event) {
+            //当上传控件选中某个本地文件时，这个文件对象就会保存在data4Vue.file上
+            this.file = event.target.files[0];
           }
         }
       });
@@ -42,7 +69,7 @@
     <br>
     <br>
     <div class="listDataTableDiv">
-      <table class="table table-striped table-bordered table-hover  table-condensed">
+      <table class="table table-striped table-bordered table-hover table-condensed">
         <thead>
           <tr class="success">
             <th>ID</th>
@@ -88,6 +115,29 @@
       </table>
     </div>
     <div th:replace="include/admin/adminPage::html"></div>
+
+    <div class="panel panel-warning addDiv">
+      <div class="panel-heading">新增分类</div>
+      <div class="panel-body">
+        <table class="addTable">
+          <tr>
+            <td>分类名称</td>
+            <td><input @keyup.enter="add" v-model.trim="bean.name" type="text" class="form-control"></td>
+          </tr>
+          <tr>
+            <td>分类图片</td>
+            <td>
+              <input id="categoryPic" accept="image/*" type="file" name="image" @change="getFile($event)" />
+            </td>
+          </tr>
+          <tr class="submitTR">
+            <td colspan="2" align="center">
+              <a href="#nowhere" @click="add" class="btn btn-success">提交</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
   <div th:replace="include/admin/adminFooter::html"></div>
 
