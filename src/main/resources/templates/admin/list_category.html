@@ -9,27 +9,33 @@
     $(function () {
       var data4Vue = {
         uri: 'categories',
+        pagination: {},
         beans: []
       };
-
       //ViewModel
       var vue = new Vue({
         el: '#workingArea',
         data: data4Vue,
         mounted: function () { //mounted　表示这个 Vue 对象加载成功了
-          this.list();
+          this.list(0);
         },
         methods: {
-          list: function () {
-            var url = this.uri;
+          list: function (start) {
+            var url = this.uri + "?start=" + start;
             axios.get(url).then(function (response) {
-              vue.beans = response.data;
+              vue.pagination = response.data;
+              vue.beans = response.data.content;
             });
+          },
+          jump: function (page) {
+            jump(page, vue); //定义在adminHeader.html 中
+          },
+          jumpByNumber: function (start) {
+            jumpByNumber(start, vue);
           }
         }
       });
     });
-
   </script>
   <div id="workingArea">
     <h1 class="label label-info">分类管理</h1>
@@ -58,24 +64,33 @@
               {{bean.name}}
             </td>
             <td>
-              <a :href="'admin_property_list?cid=' + bean.id "><span class="glyphicon glyphicon-th-list"></span></a>
+              <a :href="'admin_property_list?cid=' + bean.id ">
+                <span class="glyphicon glyphicon-th-list"></span>
+              </a>
             </td>
             <td>
-              <a :href="'admin_product_list?cid=' + bean.id "><span
-                  class="glyphicon glyphicon-shopping-cart"></span></a>
+              <a :href="'admin_product_list?cid=' + bean.id ">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+              </a>
             </td>
             <td>
-              <a :href="'admin_category_edit?id=' + bean.id "><span class="glyphicon glyphicon-edit"></span></a>
+              <a :href="'admin_category_edit?id=' + bean.id ">
+                <span class="glyphicon glyphicon-edit"></span>
+              </a>
             </td>
             <td>
-              <a href="#nowhere" @click="deleteBean(bean.id)"><span class="   glyphicon glyphicon-trash"></span></a>
+              <a href="#nowhere" @click="deleteBean(bean.id)">
+                <span class="glyphicon glyphicon-trash"></span>
+              </a>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div th:replace="include/admin/adminPage::html"></div>
   </div>
   <div th:replace="include/admin/adminFooter::html"></div>
+
 </body>
 
 </html>
