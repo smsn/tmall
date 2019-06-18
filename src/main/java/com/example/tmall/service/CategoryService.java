@@ -42,4 +42,12 @@ public class CategoryService {
     public void delete(int id) {
         categoryDAO.deleteById(id);
     }
+
+    public Category getById(int id) {
+        return categoryDAO.findById(id).get();
+    }
+
+    public void update(Category category) {
+        categoryDAO.save(category);
+    }
 }
