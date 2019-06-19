@@ -37,7 +37,7 @@ public class CategoryController {
     }
 
     @PostMapping("/categories")
-    public Object add(Category category, MultipartFile image, HttpServletRequest request) throws Exception {
+    public Category add(Category category, MultipartFile image, HttpServletRequest request) throws Exception {
         categoryService.add(category);
         saveOrUpdateImageFile(category, image, request);
         return category;
