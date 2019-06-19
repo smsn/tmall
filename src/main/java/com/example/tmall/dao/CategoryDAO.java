@@ -1,6 +1,6 @@
 package com.example.tmall.dao;
 
-import com.example.tmall.pojo.Category;
+import com.example.tmall.model.Category;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.example.tmall.web;
+package com.example.tmall.controller;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -6,7 +6,7 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
-import com.example.tmall.pojo.Category;
+import com.example.tmall.model.Category;
 import com.example.tmall.service.CategoryService;
 import com.example.tmall.util.ImageUtil;
 import com.example.tmall.util.Page4Navigator;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import com.example.tmall.dao.CategoryDAO;
-import com.example.tmall.pojo.Category;
+import com.example.tmall.model.Category;
 import com.example.tmall.util.Page4Navigator;
 
 

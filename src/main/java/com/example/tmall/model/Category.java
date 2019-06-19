@@ -1,4 +1,4 @@
-package com.example.tmall.pojo;
+package com.example.tmall.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
