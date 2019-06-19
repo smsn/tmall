@@ -37,4 +37,22 @@ public class AdminPageController {
     public String editProperty() {
         return "admin/edit_property";
     }
+
+    // 产品列表
+    @GetMapping(value = "/admin_product_list")
+    public String listProduct() {
+        return "admin/list_product";
+    }
+
+    // 产品编辑
+    @GetMapping(value = "/admin_product_edit")
+    public String editProduct() {
+        return "admin/edit_product";
+    }
+
+    // 产品图片管理
+    @GetMapping(value = "/admin_productImage_list")
+    public String listProductImage() {
+        return "admin/list_product_image";
+    }
 }
