@@ -34,3 +34,4 @@ build/
 src/main/java/com/example/tmall/util/1
 src/main/java/com/example/tmall/util/2
 src/main/webapp
+src/main/java/com/example/tmall/model/tables.sql
