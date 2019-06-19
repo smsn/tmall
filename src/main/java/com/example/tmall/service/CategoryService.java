@@ -24,8 +24,8 @@ public class CategoryService {
     // 分页查询
     public Page4Navigator<Category> list(int start, int size, int navigatePages) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = new PageRequest(start, size, sort);
-        Page pageFromJPA = categoryDAO.findAll(pageable);
+        Pageable pageable = PageRequest.of(start, size, sort);
+        Page<Category> pageFromJPA = categoryDAO.findAll(pageable);
         return new Page4Navigator<Category>(pageFromJPA, navigatePages);
     }
 
