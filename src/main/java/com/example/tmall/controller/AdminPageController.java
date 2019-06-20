@@ -55,4 +55,10 @@ public class AdminPageController {
     public String listProductImage() {
         return "admin/list_product_image";
     }
+
+    // 产品属性值设置
+    @GetMapping(value = "/admin_propertyValue_edit")
+    public String editPropertyValue() {
+        return "admin/edit_property_value";
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.example.tmall.dao.PropertyDAO;
 import com.example.tmall.model.Category;
 import com.example.tmall.model.Property;
@@ -28,6 +30,11 @@ public class PropertyService {
         Pageable pageable = PageRequest.of(start, size, sort);
         Page<Property> pageFromJPA = propertyDAO.findByCategory(category, pageable);
         return new Page4Navigator<Property>(pageFromJPA, navigatePages);
+    }
+
+    // 根据分类id查其拥有的属性
+    public List<Property> list(Category category) {
+        return propertyDAO.findByCategory(category);
     }
 
     public void add(Property property) {
