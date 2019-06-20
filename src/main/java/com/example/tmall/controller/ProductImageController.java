@@ -84,8 +84,6 @@ public class ProductImageController {
             File f_middle = new File(imageFolder_middle, fileName);
             f_small.getParentFile().mkdirs();
             f_middle.getParentFile().mkdirs();
-            System.out.println("----------------------------");
-            System.out.println(f_small.getParentFile().mkdirs());
             ImageUtil.resizeImage(file, 56, 56, f_small);
             ImageUtil.resizeImage(file, 217, 190, f_middle);
         }
