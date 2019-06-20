@@ -3,6 +3,7 @@ package com.example.tmall.controller;
 import java.util.Date;
 
 import com.example.tmall.model.Product;
+import com.example.tmall.service.ProductImageService;
 import com.example.tmall.service.ProductService;
 import com.example.tmall.util.Page4Navigator;
 
@@ -25,13 +26,18 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductImageService productImageService;
+
     // 获取属于cid的产品
     @GetMapping("/categories/{cid}/products")
     public Page4Navigator<Product> list(@PathVariable("cid") int cid,
             @RequestParam(value = "start", defaultValue = "0") int start,
             @RequestParam(value = "size", defaultValue = "5") int size) {
         start = start < 0 ? 0 : start;
-        return productService.list(cid, start, size, 5);
+        Page4Navigator<Product> page = productService.list(cid, start, size, 5);
+        productImageService.setFirstProductImages(page.getContent());
+        return page;
     }
 
     @GetMapping("/products/{id}")
