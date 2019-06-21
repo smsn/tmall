@@ -61,4 +61,14 @@ public class AdminPageController {
     public String editPropertyValue() {
         return "admin/edit_property_value";
     }
+
+    @GetMapping(value = "/admin_user_list")
+    public String listUser() {
+        return "admin/list_user";
+    }
+
+    @GetMapping(value = "/admin_order_list")
+    public String listOrder() {
+        return "admin/list_order";
+    }
 }
