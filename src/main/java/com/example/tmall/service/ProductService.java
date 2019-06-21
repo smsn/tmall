@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import com.example.tmall.dao.ProductDAO;
 import com.example.tmall.model.Category;
 import com.example.tmall.model.Product;
@@ -30,6 +32,10 @@ public class ProductService {
         Pageable pageable = PageRequest.of(start, size, sort);
         Page<Product> pageFromJPA = productDAO.findByCategory(category, pageable);
         return new Page4Navigator<Product>(pageFromJPA, navigatePages);
+    }
+
+    public List<Product> listAll(Category category) {
+        return productDAO.findByCategoryOrderById(category);
     }
 
     public void add(Product product) {
