@@ -1,0 +1,13 @@
+<div th:fragment="html">
+    <!-- 第一层遍历 取出每个分类 -->
+    <div :cid="c.id" class="productsAsideCategorys" v-for="c in categories">
+        <!-- 第二层遍历 取出每个分类的productsByRow集合 -->
+        <div class="row show1" v-for="ps in c.productsByRow">
+            <!-- 第三层遍历 根据productsByRow集合，取出每个产品，把产品的subTitle信息里的第一个单词取出来显示 -->
+            <a :href="'product?pid='+p.id" v-for="p in ps" v-if="p.subTitle.length!=0">
+                {{p.subTitle | subTitleFilter}}
+            </a>
+            <div class="seperator"></div>
+        </div>
+    </div>
+</div>
