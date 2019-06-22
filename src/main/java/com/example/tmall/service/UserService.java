@@ -35,4 +35,12 @@ public class UserService {
     public void add(User user) {
         userDAO.save(user);
     }
+
+	public boolean verifyUser(User user) {
+        User user_ = userDAO.findByName(user.getName());
+        if (user.getPassword().equals(user_.getPassword())) {
+            return true;
+        }
+		return false;
+	}
 }

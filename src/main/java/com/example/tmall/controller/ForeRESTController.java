@@ -2,6 +2,8 @@ package com.example.tmall.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import com.example.tmall.model.Category;
 import com.example.tmall.model.User;
 import com.example.tmall.service.CategoryService;
@@ -51,5 +53,17 @@ public class ForeRESTController {
         }
         userService.add(user);
         return ResultStatus.success(user);
+    }
+
+    @PostMapping(value="/forelogin")
+    public Object register(@RequestBody User user, HttpSession session) {
+        String name = HtmlUtils.htmlEscape(user.getName());
+        user.setName(name);
+        // String password = user.getPassword();
+        if (userService.verifyUser(user)) {
+            session.setAttribute("user", user);
+            return ResultStatus.success(user);
+        }
+        return ResultStatus.fail("账号密码错误");
     }
 }
