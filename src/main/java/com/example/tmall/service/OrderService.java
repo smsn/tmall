@@ -69,7 +69,7 @@ public class OrderService {
     }
 
     public Order getById(int id) {
-        return orderDAO.getOne(id);
+        return orderDAO.findById(id).get();
     }
 
     public void update(Order order) {
