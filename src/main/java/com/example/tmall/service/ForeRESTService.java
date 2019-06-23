@@ -69,6 +69,12 @@ public class ForeRESTService {
         return productsByRow;
     }
 
+    public void initProduct(List<Product> products) {
+        for (Product product : products) {
+            initProduct(product);
+        }
+    }
+
     public void initProduct(Product product) {
         // 设置产品预览图
         List<ProductImage> productSingleImages = productImageService.listProductImages(product, "single");

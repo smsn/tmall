@@ -106,7 +106,16 @@ public class ForeRESTController {
         return ResultStatus.success(map);
     }
 
-    @GetMapping("forecategory/{cid}")
+    @GetMapping("/forecheckLogin")
+    public Object checkLogin(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (null != user) {
+            return ResultStatus.success();
+        }
+        return ResultStatus.fail("未登录");
+    }
+
+    @GetMapping("/forecategory/{cid}")
     public Category Category(@PathVariable int cid, String sort) {
         Category category = categoryService.getById(cid);
         foreRESTService.carryProducts(category);
@@ -134,5 +143,15 @@ public class ForeRESTController {
             }
         }
         return category;
+    }
+
+    @PostMapping("/foresearch")
+    public List<Product> search(String keyword) {
+        if (null == keyword) {
+            keyword = "";
+        }
+        List<Product> products = productService.search(keyword, 0, 20);
+        foreRESTService.initProduct(products);
+        return products;
     }
 }
