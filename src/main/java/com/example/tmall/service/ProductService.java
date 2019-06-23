@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.example.tmall.dao.ProductDAO;
 import com.example.tmall.model.Category;
+import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
 import com.example.tmall.util.Page4Navigator;
 
@@ -24,6 +25,9 @@ public class ProductService {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    OrderItemService orderItemService;
 
     // 根据分类id查其拥有的属产品
     public Page4Navigator<Product> list(int cid, int start, int size, int navigatePages) {
@@ -52,5 +56,17 @@ public class ProductService {
 
     public void update(Product product) {
         productDAO.save(product);
+    }
+
+    public int getSaleCount(Product product) {
+        List<OrderItem> orderItems = orderItemService.listByProduct(product);
+        int saleCount = 0;
+        for (OrderItem orderItem : orderItems) {
+            // 存在订单且已支付
+            if (null != orderItem.getOrder() && null != orderItem.getOrder().getPayDate()) {
+                saleCount += orderItem.getNumber();
+            }
+        }
+        return saleCount;
     }
 }

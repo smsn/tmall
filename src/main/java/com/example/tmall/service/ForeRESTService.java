@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.tmall.model.Category;
 import com.example.tmall.model.Product;
+import com.example.tmall.model.ProductImage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ForeRESTService {
     @Autowired
     private ProductImageService productImageService;
 
+    @Autowired
+    private ReviewService reviewService;
+
     public void carryProducts(List<Category> categories) {
         for (Category category : categories) {
             carryProducts(category);
@@ -31,7 +35,7 @@ public class ForeRESTService {
         List<Product> products = productService.listAll(category);
         // 设置封面
         productImageService.setFirstProductImages(products);
-        //移除产品的分类信息
+        // 移除产品的分类信息
         for (Product product : products) {
             product.setCategory(null);
         }
@@ -54,6 +58,22 @@ public class ForeRESTService {
             productsByRow.add(productsOfEachRow);
         }
         return productsByRow;
+    }
+
+    public void initProduct(Product product) {
+        // 设置产品预览图
+        List<ProductImage> productSingleImages = productImageService.listProductImages(product, "single");
+        product.setProductSingleImages(productSingleImages);
+        // 设置封面
+        product.setFirstProductImage(productSingleImages.get(0));
+        // 设置产品详情图片
+        List<ProductImage> productDetailImages = productImageService.listProductImages(product, "detail");
+        product.setProductDetailImages(productDetailImages);
+        //设置产品的销量和评价数量
+        int saleCount = productService.getSaleCount(product);
+        int reviewCount = reviewService.getCount(product);
+        product.setSaleCount(saleCount);
+        product.setReviewCount(reviewCount);
     }
 
 }

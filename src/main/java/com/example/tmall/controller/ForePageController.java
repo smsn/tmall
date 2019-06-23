@@ -41,4 +41,9 @@ public class ForePageController {
         session.removeAttribute("user");
         return "redirect:home";
     }
+
+    @GetMapping("/product")
+    public String product() {
+        return "fore/product";
+    }
 }
