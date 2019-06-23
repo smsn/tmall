@@ -9,6 +9,7 @@ import com.example.tmall.dao.OrderItemDAO;
 import com.example.tmall.model.Order;
 import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
+import com.example.tmall.model.User;
 
 /**
  * CRUD
@@ -26,5 +27,21 @@ public class OrderItemService {
     // 查询某产品的记录
     public List<OrderItem> listByProduct(Product product) {
         return orderItemDAO.findByProduct(product);
+    }
+
+    public List<OrderItem> listByUser(User user) {
+        return orderItemDAO.findByUserAndOrderIsNull(user);
+    }
+
+    public void update(OrderItem orderItem) {
+        orderItemDAO.save(orderItem);
+    }
+
+    public void add(OrderItem orderItem) {
+        orderItemDAO.save(orderItem);
+    }
+
+    public OrderItem getById(int id) {
+        return orderItemDAO.findById(id).get();
     }
 }

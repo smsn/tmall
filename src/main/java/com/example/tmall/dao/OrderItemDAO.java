@@ -5,6 +5,7 @@ import java.util.List;
 import com.example.tmall.model.Order;
 import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
+import com.example.tmall.model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -20,4 +21,5 @@ public interface OrderItemDAO extends JpaRepository<OrderItem, Integer> {
     List<OrderItem> findByOrderOrderByIdDesc(Order order);
     // 查询某产品的记录
     List<OrderItem> findByProduct(Product product);
+    List<OrderItem> findByUserAndOrderIsNull(User user);
 }

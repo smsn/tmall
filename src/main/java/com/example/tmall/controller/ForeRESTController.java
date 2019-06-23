@@ -1,8 +1,10 @@
 package com.example.tmall.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -12,12 +14,15 @@ import com.example.tmall.comparator.ProductPriceComparator;
 import com.example.tmall.comparator.ProductReviewComparator;
 import com.example.tmall.comparator.ProductSaleCountComparator;
 import com.example.tmall.model.Category;
+import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
 import com.example.tmall.model.PropertyValue;
 import com.example.tmall.model.Review;
 import com.example.tmall.model.User;
 import com.example.tmall.service.CategoryService;
 import com.example.tmall.service.ForeRESTService;
+import com.example.tmall.service.OrderItemService;
+import com.example.tmall.service.ProductImageService;
 import com.example.tmall.service.ProductService;
 import com.example.tmall.service.PropertyValueService;
 import com.example.tmall.service.ReviewService;
@@ -55,6 +60,12 @@ public class ForeRESTController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private OrderItemService orderItemService;
+
+    @Autowired
+    private ProductImageService productImageService;
 
     // 返回一个携带产品信息的分类列表
     @GetMapping("/forehome")
@@ -153,5 +164,59 @@ public class ForeRESTController {
         List<Product> products = productService.search(keyword, 0, 20);
         foreRESTService.initProduct(products);
         return products;
+    }
+
+    // 立即购买
+    @GetMapping("forebuyone")
+    public Object buyone(int pid, int num, HttpSession session) {
+        return buyoneAndAddCart(pid, num, session);
+    }
+
+    private int buyoneAndAddCart(int pid, int num, HttpSession session) {
+        Product product = productService.getById(pid);
+        User user_ = (User) session.getAttribute("user");
+        User user = userService.getUserByName(user_.getName());
+        List<OrderItem> orderItems = orderItemService.listByUser(user);
+
+        int oiid = 0;
+        boolean found = false;
+        for (OrderItem orderItem : orderItems) {
+            if (orderItem.getProduct().getId() == product.getId()) {
+                orderItem.setNumber(orderItem.getNumber() + num);
+                orderItemService.update(orderItem);
+                found = true;
+                oiid = orderItem.getId();
+                break;
+            }
+        }
+
+        if (!found) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setUser(user);
+            orderItem.setProduct(product);
+            orderItem.setNumber(num);
+            orderItemService.add(orderItem);
+            oiid = orderItem.getId();
+        }
+        return oiid;
+    }
+
+    // 提交订单页面
+    @GetMapping("forebuy")
+    public Object buy(String[] oiid, HttpSession session) {
+        List<OrderItem> orderItems = new ArrayList<>();
+        float total = 0;
+        for (String strid : oiid) {
+            int id = Integer.parseInt(strid);
+            OrderItem orderItem = orderItemService.getById(id);
+            total += orderItem.getProduct().getPromotePrice() * orderItem.getNumber();
+            orderItems.add(orderItem);
+        }
+        productImageService.setFirstProdutImagesOnOrderItems(orderItems);
+        session.setAttribute("ois", orderItems);
+        Map<String, Object> map = new HashMap<>();
+        map.put("orderItems", orderItems);
+        map.put("total", total);
+        return ResultStatus.success(map);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import com.example.tmall.dao.ProductImageDAO;
+import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
 import com.example.tmall.model.ProductImage;
 
@@ -54,6 +55,12 @@ public class ProductImageService {
     public void setFirstProductImages(List<Product> products) {
         for (Product product : products) {
             setFirstProductImage(product);
+        }
+    }
+
+    public void setFirstProdutImagesOnOrderItems(List<OrderItem> orderItems) {
+        for (OrderItem orderItem : orderItems) {
+            setFirstProductImage(orderItem.getProduct());
         }
     }
 }

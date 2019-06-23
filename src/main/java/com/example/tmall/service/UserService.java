@@ -36,11 +36,16 @@ public class UserService {
         userDAO.save(user);
     }
 
-	public boolean verifyUser(User user) {
+    public boolean verifyUser(User user) {
         User user_ = userDAO.findByName(user.getName());
         if (user.getPassword().equals(user_.getPassword())) {
             return true;
         }
-		return false;
-	}
+        return false;
+    }
+
+    public User getUserByName(String name) {
+        User user = userDAO.findByName(name);
+        return user;
+    }
 }
