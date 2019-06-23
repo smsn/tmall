@@ -41,6 +41,15 @@ public class ForeRESTService {
         }
         // 绑定产品到分类上
         category.setProducts(products);
+    }
+
+    public void carrySplitGroupProducts(List<Category> categories) {
+        for (Category category : categories) {
+            carrySplitGroupProducts(category, category.getProducts());
+        }
+    }
+
+    public void carrySplitGroupProducts(Category category, List<Product> products) {
         // 对产品分组
         List<List<Product>> productsByRow = splitGroup(products);
         // 绑定分组后的产品
@@ -69,6 +78,17 @@ public class ForeRESTService {
         // 设置产品详情图片
         List<ProductImage> productDetailImages = productImageService.listProductImages(product, "detail");
         product.setProductDetailImages(productDetailImages);
+        //设置产品的销量和评价数量
+        setSaleAndReviewNumber(product);
+    }
+
+    public void setSaleAndReviewNumber(List<Product> products) {
+        for (Product product : products) {
+            setSaleAndReviewNumber(product);
+        }
+    }
+
+    public void setSaleAndReviewNumber(Product product) {
         //设置产品的销量和评价数量
         int saleCount = productService.getSaleCount(product);
         int reviewCount = reviewService.getCount(product);

@@ -1,10 +1,16 @@
 package com.example.tmall.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.example.tmall.comparator.ProductAllComparator;
+import com.example.tmall.comparator.ProductDateComparator;
+import com.example.tmall.comparator.ProductPriceComparator;
+import com.example.tmall.comparator.ProductReviewComparator;
+import com.example.tmall.comparator.ProductSaleCountComparator;
 import com.example.tmall.model.Category;
 import com.example.tmall.model.Product;
 import com.example.tmall.model.PropertyValue;
@@ -56,6 +62,7 @@ public class ForeRESTController {
         List<Category> categories = categoryService.list();
         // 携带产品
         foreRESTService.carryProducts(categories);
+        foreRESTService.carrySplitGroupProducts(categories);
         return categories;
     }
 
@@ -97,5 +104,35 @@ public class ForeRESTController {
         map.put("pvs", propertyValues);
         map.put("reviews", reviews);
         return ResultStatus.success(map);
+    }
+
+    @GetMapping("forecategory/{cid}")
+    public Category Category(@PathVariable int cid, String sort) {
+        Category category = categoryService.getById(cid);
+        foreRESTService.carryProducts(category);
+        foreRESTService.setSaleAndReviewNumber(category.getProducts());
+        // 排序
+        if (null != sort) {
+            switch (sort) {
+                case "review":
+                    Collections.sort(category.getProducts(), new ProductReviewComparator());
+                    break;
+                case "date":
+                    Collections.sort(category.getProducts(), new ProductDateComparator());
+                    break;
+                case "saleCount":
+                    Collections.sort(category.getProducts(), new ProductSaleCountComparator());
+                    break;
+                case "price":
+                    Collections.sort(category.getProducts(), new ProductPriceComparator());
+                    break;
+                case "all":
+                    Collections.sort(category.getProducts(), new ProductAllComparator());
+                    break;
+                default:
+                    break;
+            }
+        }
+        return category;
     }
 }
