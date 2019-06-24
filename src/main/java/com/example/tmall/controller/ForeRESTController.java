@@ -167,7 +167,7 @@ public class ForeRESTController {
     }
 
     // 立即购买
-    @GetMapping("forebuyone")
+    @GetMapping("/forebuyone")
     public Object buyone(int pid, int num, HttpSession session) {
         return buyoneAndAddCart(pid, num, session);
     }
@@ -202,7 +202,7 @@ public class ForeRESTController {
     }
 
     // 提交订单页面
-    @GetMapping("forebuy")
+    @GetMapping("/forebuy")
     public Object buy(String[] oiid, HttpSession session) {
         List<OrderItem> orderItems = new ArrayList<>();
         float total = 0;
@@ -218,5 +218,22 @@ public class ForeRESTController {
         map.put("orderItems", orderItems);
         map.put("total", total);
         return ResultStatus.success(map);
+    }
+
+    // 加入购物车
+    @GetMapping("/foreaddCart")
+    public Object addCart(int pid, int num, HttpSession session) {
+        buyoneAndAddCart(pid, num, session);
+        return ResultStatus.success();
+    }
+
+    // 查看购物车
+    @GetMapping("forecart")
+    public List<OrderItem> cart(HttpSession session) {
+        User user_ = (User) session.getAttribute("user");
+        User user = userService.getUserByName(user_.getName());
+        List<OrderItem> orderItems = orderItemService.listByUser(user);
+        productImageService.setFirstProdutImagesOnOrderItems(orderItems);
+        return orderItems;
     }
 }
