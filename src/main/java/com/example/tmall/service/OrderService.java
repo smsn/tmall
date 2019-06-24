@@ -72,6 +72,10 @@ public class OrderService {
         return orderDAO.findById(id).get();
     }
 
+    public void add(Order order) {
+        orderDAO.save(order);
+    }
+
     public void update(Order order) {
         orderDAO.save(order);
     }

@@ -1,7 +1,9 @@
 package com.example.tmall.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import com.example.tmall.comparator.ProductPriceComparator;
 import com.example.tmall.comparator.ProductReviewComparator;
 import com.example.tmall.comparator.ProductSaleCountComparator;
 import com.example.tmall.model.Category;
+import com.example.tmall.model.Order;
 import com.example.tmall.model.OrderItem;
 import com.example.tmall.model.Product;
 import com.example.tmall.model.PropertyValue;
@@ -22,6 +25,7 @@ import com.example.tmall.model.User;
 import com.example.tmall.service.CategoryService;
 import com.example.tmall.service.ForeRESTService;
 import com.example.tmall.service.OrderItemService;
+import com.example.tmall.service.OrderService;
 import com.example.tmall.service.ProductImageService;
 import com.example.tmall.service.ProductService;
 import com.example.tmall.service.PropertyValueService;
@@ -29,6 +33,7 @@ import com.example.tmall.service.ReviewService;
 import com.example.tmall.service.UserService;
 import com.example.tmall.util.ResultStatus;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +68,9 @@ public class ForeRESTController {
 
     @Autowired
     private OrderItemService orderItemService;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private ProductImageService productImageService;
@@ -265,5 +273,35 @@ public class ForeRESTController {
         }
         orderItemService.delete(oiid);
         return ResultStatus.success();
+    }
+
+    // 创建订单
+    @PostMapping("/forecreateOrder")
+    public Object createOrder(@RequestBody Order order, HttpSession session) {
+        User user_ = (User) session.getAttribute("user");
+        if (null == user_) {
+            return ResultStatus.fail("未登录");
+        }
+        User user = userService.getUserByName(user_.getName());
+
+        String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + RandomUtils.nextInt(0,10000);
+        order.setOrderCode(orderCode);
+        order.setCreateDate(new Date());
+        order.setUser(user);
+        order.setStatus(OrderService.waitPay);
+        orderService.add(order);
+
+        List<OrderItem> orderItems = (List<OrderItem>) session.getAttribute("ois");
+        float total = 0;
+        for (OrderItem orderItem : orderItems) {
+            orderItem.setOrder(order);
+            orderItemService.update(orderItem);
+            total += orderItem.getProduct().getPromotePrice() * orderItem.getNumber();
+        }
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("oid", order.getId());
+        map.put("total", total);
+        return ResultStatus.success(map);
     }
 }
