@@ -228,7 +228,7 @@ public class ForeRESTController {
     }
 
     // 查看购物车
-    @GetMapping("forecart")
+    @GetMapping("/forecart")
     public List<OrderItem> cart(HttpSession session) {
         User user_ = (User) session.getAttribute("user");
         User user = userService.getUserByName(user_.getName());
