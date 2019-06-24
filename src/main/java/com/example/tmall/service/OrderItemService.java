@@ -44,4 +44,8 @@ public class OrderItemService {
     public OrderItem getById(int id) {
         return orderItemDAO.findById(id).get();
     }
+
+    public void delete(int id) {
+        orderItemDAO.deleteById(id);
+    }
 }
