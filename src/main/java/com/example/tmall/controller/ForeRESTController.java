@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
@@ -326,5 +327,35 @@ public class ForeRESTController {
         List<Order> orders = orderService.listByUserWithoutDelete(user);
         orderService.init(orders);
         return orders;
+    }
+
+    // 确认收货页面
+    @GetMapping("/foreconfirmPay")
+    public Order confirmPay(int oid) {
+        Order order = orderService.getById(oid);
+        orderService.init(order);
+        return order;
+    }
+    // 确认收货
+    @GetMapping("/foreorderConfirmed")
+    public Object orderConfirmed(int oid) {
+        Order order = orderService.getById(oid);
+        order.setStatus(OrderService.waitReview);
+        order.setConfirmDate(new Date());
+        orderService.update(order);
+        return ResultStatus.success();
+    }
+
+    // 删除订单
+    @PutMapping("foredeleteOrder")
+    public Object deleteOrder(int oid) {
+        Order order = orderService.getById(oid);
+        if (order.getStatus().equals(OrderService.waitDelivery) || order.getStatus().equals(OrderService.waitConfirm)) {
+            return ResultStatus.fail("已支付或已发货");
+        } else {
+            order.setStatus(OrderService.delete);
+            orderService.update(order);
+            return ResultStatus.success();
+        }
     }
 }

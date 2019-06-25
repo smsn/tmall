@@ -62,7 +62,7 @@
                         if (0 == response.data.code) {
                             $("table.orderListItemTable[oid=" + deleteOrderid + "]").hide();
                         } else {
-                            location.href = "login";
+                            alert(response.data.message);
                         }
                     });
                 }
@@ -132,7 +132,7 @@
                             ￥{{oi.product.originalPrice|formatMoneyFilter}}
                         </div>
                         <div class="orderListItemProductPrice">
-                            ￥{{oi.product.promotePric|formatMoneyFilter}}
+                            ￥{{oi.product.promotePrice|formatMoneyFilter}}
                         </div>
                     </td>
                     <template v-if="index==0">
