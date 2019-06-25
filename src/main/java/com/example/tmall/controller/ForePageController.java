@@ -7,6 +7,8 @@ import com.example.tmall.model.User;
 import com.example.tmall.service.OrderService;
 import com.example.tmall.service.UserService;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +52,11 @@ public class ForePageController {
 
     @GetMapping("/forelogout")
     public String logout(HttpSession session) {
-        session.removeAttribute("user");
+        // session.removeAttribute("user");
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isAuthenticated()) {
+            subject.logout();
+        }
         return "redirect:home";
     }
 

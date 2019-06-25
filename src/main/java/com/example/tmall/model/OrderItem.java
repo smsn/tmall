@@ -64,6 +64,7 @@ public class OrderItem {
 
     public User getUser() {
         user.setPassword("******");
+        user.setSalt("");
         return user;
     }
 

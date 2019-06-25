@@ -168,6 +168,7 @@ public class Order {
 
     public User getUser() {
         user.setPassword("******");
+        user.setSalt("");
         return user;
     }
 
