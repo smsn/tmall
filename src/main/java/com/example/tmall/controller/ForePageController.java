@@ -2,6 +2,12 @@ package com.example.tmall.controller;
 
 import javax.servlet.http.HttpSession;
 
+import com.example.tmall.model.Order;
+import com.example.tmall.model.User;
+import com.example.tmall.service.OrderService;
+import com.example.tmall.service.UserService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -10,6 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class ForePageController {
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/")
     public String index() {
@@ -90,5 +102,19 @@ public class ForePageController {
     @GetMapping(value = "/orderConfirmed")
     public String orderConfirmed() {
         return "fore/orderConfirmed";
+    }
+
+    @GetMapping(value = "/review")
+    public String review(HttpSession session, int oid) {
+        User user_ = (User) session.getAttribute("user");
+        if (null == user_) {
+            return "redirect:login";
+        }
+        User user = userService.getUserByName(user_.getName());
+        Order order = orderService.getById(oid);
+        if (user.getId() == order.getUser().getId()) {
+            return "fore/review";
+        }
+        return "redirect:login";
     }
 }

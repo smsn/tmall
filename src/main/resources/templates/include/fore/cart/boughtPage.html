@@ -158,6 +158,9 @@
                             <div v-if="o.status=='待发货'">
                                 <span>待发货</span>
                             </div>
+                            <div v-if="o.status=='完成'">
+                                <span>已完成</span>
+                            </div>
                             <a v-if="o.status=='待评价'" :href="'review?oid='+o.id">
                                 <button class="orderListItemReview">评价</button>
                             </a>

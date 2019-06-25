@@ -358,4 +358,43 @@ public class ForeRESTController {
             return ResultStatus.success();
         }
     }
+
+    // 评价页面
+    @GetMapping("/forereview")
+    public Object review(int oid) {
+        Order order = orderService.getById(oid);
+        orderService.init(order);
+
+        Product product = order.getOrderItems().get(0).getProduct();
+        List<Review> reviews = reviewService.list(product);
+        foreRESTService.setSaleAndReviewNumber(product);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("p", product);
+        map.put("o", order);
+        map.put("reviews", reviews);
+        return ResultStatus.success(map);
+    }
+
+    // 提交评价
+    @PostMapping("foredoreview")
+    public Object doreview(HttpSession session, int oid, int pid, String content) {
+        Order order = orderService.getById(oid);
+        order.setStatus(OrderService.finish);
+        orderService.update(order);
+
+        Product product = productService.getById(pid);
+        content = HtmlUtils.htmlEscape(content);
+
+        User user_ = (User) session.getAttribute("user");
+        User user = userService.getUserByName(user_.getName());
+
+        Review review = new Review();
+        review.setContent(content);
+        review.setCreateDate(new Date());
+        review.setProduct(product);
+        review.setUser(user);
+        reviewService.add(review);
+        return ResultStatus.success();
+    }
 }
