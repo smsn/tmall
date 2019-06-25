@@ -46,6 +46,7 @@ public class Review {
     }
 
     public User getUser() {
+        user.setPassword("******");
         return user;
     }
 
