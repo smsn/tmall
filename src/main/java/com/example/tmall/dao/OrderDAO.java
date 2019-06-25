@@ -1,6 +1,9 @@
 package com.example.tmall.dao;
 
+import java.util.List;
+
 import com.example.tmall.model.Order;
+import com.example.tmall.model.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,5 +15,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Spring Data JPA -> Hibernate -> JDBC -> SQL
  */
 public interface OrderDAO extends JpaRepository<Order, Integer> {
+
+    List<Order> findByUserAndStatusNotOrderByIdDesc(User user, String delete);
 
 }

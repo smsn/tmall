@@ -314,4 +314,17 @@ public class ForeRESTController {
         orderService.update(order);
         return order;
     }
+
+    // 我的订单
+    @GetMapping("/forebought")
+    public Object bought(HttpSession session) {
+        User user_ = (User) session.getAttribute("user");
+        if (null == user_) {
+            return ResultStatus.fail("未登录");
+        }
+        User user = userService.getUserByName(user_.getName());
+        List<Order> orders = orderService.listByUserWithoutDelete(user);
+        orderService.init(orders);
+        return orders;
+    }
 }

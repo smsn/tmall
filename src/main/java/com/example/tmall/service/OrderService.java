@@ -12,6 +12,7 @@ import java.util.List;
 import com.example.tmall.dao.OrderDAO;
 import com.example.tmall.model.Order;
 import com.example.tmall.model.OrderItem;
+import com.example.tmall.model.User;
 import com.example.tmall.util.Page4Navigator;
 
 /**
@@ -78,5 +79,10 @@ public class OrderService {
 
     public void update(Order order) {
         orderDAO.save(order);
+    }
+
+    public List<Order> listByUserWithoutDelete(User user) {
+        List<Order> orders = orderDAO.findByUserAndStatusNotOrderByIdDesc(user, OrderService.delete);
+        return orders;
     }
 }
