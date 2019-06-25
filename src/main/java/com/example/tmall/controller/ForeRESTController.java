@@ -304,4 +304,14 @@ public class ForeRESTController {
         map.put("total", total);
         return ResultStatus.success(map);
     }
+
+    // 支付
+    @GetMapping("/forepayed")
+    public Object payed(int oid) {
+        Order order = orderService.getById(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date());
+        orderService.update(order);
+        return order;
+    }
 }

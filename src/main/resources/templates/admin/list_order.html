@@ -92,7 +92,7 @@
               <td>
                 <button @click="showOrderItems(bean)" class="orderPageCheckOrderItems btn btn-primary btn-xs">查看详情
                 </button>
-                <button v-if="bean.status=='waitDelivery'" @click="deliveryOrder(bean,$event)"
+                <button v-if="bean.status=='待发货'" @click="deliveryOrder(bean,$event)"
                   class="btn btn-primary btn-xs">发货
                 </button>
               </td>

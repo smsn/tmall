@@ -66,4 +66,14 @@ public class ForePageController {
     public String cart() {
         return "fore/cart";
     }
+
+    @GetMapping(value = "/alipay")
+    public String alipay() {
+        return "fore/alipay";
+    }
+
+    @GetMapping(value = "/payed")
+    public String payed() {
+        return "fore/payed";
+    }
 }

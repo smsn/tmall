@@ -41,6 +41,7 @@ public class OrderController {
         // 开始发货
         order.setDeliveryDate(new Date());
         order.setStatus(OrderService.waitConfirm);
+        orderService.update(order);
         return ResultStatus.success();
     }
 }
