@@ -1,6 +1,9 @@
 package com.example.tmall.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ import com.example.tmall.model.PropertyValue;
  * CRUD
  */
 @Service
+@CacheConfig(cacheNames = "propertyValues")
 public class PropertyValueService {
     @Autowired
     PropertyValueDAO propertyValueDAO;
@@ -37,15 +41,18 @@ public class PropertyValueService {
     }
 
     // 获取某产品所有属性值
+    @Cacheable(key = "'propertyValues-pid-'+ #p0.id")
     public List<PropertyValue> list(Product product) {
         return propertyValueDAO.getByProductOrderByIdDesc(product);
     }
 
     // 获取某产品 某个属性的值
+    @Cacheable(key = "'propertyValues-one-pid-'+#p0.id+ '-ptid-' + #p1.id")
     public PropertyValue getByPropertyAndProduct(Product product, Property property) {
         return propertyValueDAO.getByPropertyAndProduct(property, product);
     }
 
+    @CacheEvict(allEntries = true)
     public void update(PropertyValue propertyValue) {
         propertyValueDAO.save(propertyValue);
     }

@@ -1,6 +1,9 @@
 package com.example.tmall.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,7 @@ import com.example.tmall.util.Page4Navigator;
  * CRUD
  */
 @Service
+@CacheConfig(cacheNames = "products")
 public class ProductService {
     @Autowired
     ProductDAO productDAO;
@@ -30,6 +34,7 @@ public class ProductService {
     OrderItemService orderItemService;
 
     // 根据分类id查其拥有的属产品
+    @Cacheable(key = "'products-cid-'+#p0+'-page-'+#p1 + '-' + #p2 ")
     public Page4Navigator<Product> list(int cid, int start, int size, int navigatePages) {
         Category category = categoryService.getById(cid);
         Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -49,18 +54,22 @@ public class ProductService {
         return products;
     }
 
+    @CacheEvict(allEntries = true)
     public void add(Product product) {
         productDAO.save(product);
     }
 
+    @CacheEvict(allEntries = true)
     public void delete(int id) {
         productDAO.deleteById(id);
     }
 
+    @Cacheable(key = "'products-one-'+ #p0")
     public Product getById(int id) {
         return productDAO.findById(id).get();
     }
 
+    @CacheEvict(allEntries = true)
     public void update(Product product) {
         productDAO.save(product);
     }

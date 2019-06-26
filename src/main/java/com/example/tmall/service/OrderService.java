@@ -1,6 +1,9 @@
 package com.example.tmall.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +22,7 @@ import com.example.tmall.util.Page4Navigator;
  * CRUD
  */
 @Service
+@CacheConfig(cacheNames = "orders")
 public class OrderService {
 
     public static final String waitPay = "待付款";
@@ -69,14 +73,17 @@ public class OrderService {
         order.setTotalNumber(totalNumber);
     }
 
+    @Cacheable(key = "'orders-one-'+ #p0")
     public Order getById(int id) {
         return orderDAO.findById(id).get();
     }
 
+    @CacheEvict(allEntries = true)
     public void add(Order order) {
         orderDAO.save(order);
     }
 
+    @CacheEvict(allEntries = true)
     public void update(Order order) {
         orderDAO.save(order);
     }

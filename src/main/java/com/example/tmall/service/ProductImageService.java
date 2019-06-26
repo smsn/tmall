@@ -1,6 +1,9 @@
 package com.example.tmall.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +17,7 @@ import com.example.tmall.model.ProductImage;
  * CRUD
  */
 @Service
+@CacheConfig(cacheNames = "productImages")
 public class ProductImageService {
     @Autowired
     ProductImageDAO productImageDAO;
@@ -25,18 +29,22 @@ public class ProductImageService {
     public static final String type_detail = "detail";
 
     // 查询产品图片
+    @Cacheable(key = "'productImages-single-pid-'+ #p0.id")
     public List<ProductImage> listProductImages(Product product, String type) {
         return productImageDAO.findByProductAndTypeOrderByIdDesc(product, type);
     }
 
+    @CacheEvict(allEntries = true)
     public void add(ProductImage productImage) {
         productImageDAO.save(productImage);
     }
 
+    @CacheEvict(allEntries = true)
     public void delete(int id) {
         productImageDAO.deleteById(id);
     }
 
+    @Cacheable(key = "'productImages-one-'+ #p0")
     public ProductImage getById(int id) {
         return productImageDAO.findById(id).get();
     }
